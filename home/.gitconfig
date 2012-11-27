@@ -1,0 +1,18 @@
+[user]
+	name = KAWANO Yohei
+	email = yohei.kawano@gmail.com
+[help]
+	autocorrect = 1
+[color]
+	ui = true
+[core]
+	autocrlf = input
+	editor = vim
+[alias]
+	co = checkout
+	ci = commit
+	st = status
+	br = branch
+	di = diff
+[merge]
+	tool = vimdiff
