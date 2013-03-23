@@ -40,6 +40,10 @@ var selectionModel = {
         this.updateViews();
     },
 
+    changeIcecreamNumber: function(n) {
+        this.icecreamNumber = n;
+    },
+
     contain: function(icecream) {
         return this.list.indexOf(icecream) >= 0;
     },
@@ -79,6 +83,11 @@ $(function(){
     $("#clear-icecreams").click(function() {
         selectionModel.clear();
     });
+
+    $("#icecream-number").val(selectionModel.icecreamNumber);
+    $("#change-icecream-number").click(function() {
+        changeIcecreamNumber();
+    });
 });
 
 function updateSelection() {
@@ -105,4 +114,10 @@ function onclickIcecream(event) {
             item
         );
     }
+}
+
+function changeIcecreamNumber() {
+    var icecreamNumber = $("#icecream-number").val();
+    selectionModel.changeIcecreamNumber(icecreamNumber);
+    selectionModel.clear();
 }

@@ -27,6 +27,12 @@ function testModels() {
     ok("selectionModel.getIcecreams", 2, selectionModel.getIcecreams().length);
     ok("selectionModel.contain", false, selectionModel.contain(all[0]));
     ok("selectionModel.contain", true, selectionModel.contain(all[2]));
+
+    selectionModel.clear();
+    ok("selectionModel.getIcecreams", 0, selectionModel.getIcecreams().length);
+
+    selectionModel.changeIcecreamNumber(4);
+    ok("selectionModel.changeIcecreamNumber", 4, selectionModel.icecreamNumber);
 }
 
 testModels();
