@@ -17,42 +17,128 @@
                 border-bottom: 2px dashed #777;
                 background: #FED;
             }
+            input.text-editing {
+                z-index: 99;
+                position: absolute;
+                font-size: 20px;
+            }
         </style>
         <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
         <script>
         $(function() {
-            console.log("state");
-
+            var state = null;
             var selected = null;
-
-            $("#list li").mousedown(function() {
-                if (!selected) {
-                    selected = this;
-                }
-                $("#drag-item").text($(selected).text()).show();
+            
+            $("#list li").mousedown(function(event) {
+                state.onMouseDown(event);
             });
-
             $("#list").mousemove(function(event) {
-                var target = event.target;
-                if (target.tagName == "LI" && selected) {
-                    console.log('x: '+event.pageX+', y: '+event.pageY);
-                    $("#drag-item").css(
-                        {left: event.pageX + 2, top: event.pageY + 2}
-                    );
-                    $("#list li").removeClass("drag-over");
-                    $(selected).addClass("drag-over");
+                state.onMouseMove(event);
+            });
+            $("#list").mouseup(function(event) {
+                state.onMouseUp(event);
+            });
+            $("#list").dblclick(function(event) {
+                state.onDblClick(event);
+            });
+            $(document).keydown(function(event) {
+                state.onKeyDown(event);
+            });
+
+            var transitState = function(nextState) {
+                $("#debug").text(state + " -> " + nextState);
+                state = nextState;
+            }
+
+            var AbstractState = function() {};
+            AbstractState.prototype = {
+                initialize: function() {},
+                onMouseDown: function(event) {},
+                onMouseMove: function(event) {},
+                onMouseUp: function(event) {},
+                onDblClick: function(event) {},
+                onKeyDown: function(event) {},
+                toString: function() {
+                    return "AbstractState";
+                }
+            }
+
+            var NormalState = function() {
+                selected = null;
+            };
+            $.extend(NormalState.prototype, AbstractState.prototype, {
+                onMouseDown: function(event) {
+                    var target = event.target;
+                    if (target.tagName == "LI") {
+                        transitState(new DragMovingState(target));
+                    }
+                },
+                onDblClick: function(event) {
+                    var target = event.target;
+                    if (target.tagName == "LI") {
+                        transitState(new TextEditingState(target));
+                    }
+                },
+                toString: function() {
+                    return "NormalState";
                 }
             });
 
-            $("#list").mouseup(function(event) {
-                var target = event.target;
-                if (target.tagName == 'LI' && selected) {
-                    $(target).after(selected);
-                    selected = null;
-                    $("#list li").removeClass('drag-over');
+            DragMovingState = function(target) {
+                selected = target;
+                $("#drag-item").text($(selected).text()).show();
+            };
+            $.extend(DragMovingState.prototype, AbstractState.prototype, {
+                onMouseMove: function(event) {
+                    var target = event.target;
+                    if (target.tagName == "LI") {
+                        $("#drag-item").css(
+                            {left: event.pageX + 2, top: event.pageY + 2}
+                        );
+                        $("#list li").removeClass("drag-over");
+                        $(target).addClass("drag-over");
+                    }
+                },
+                onMouseUp: function(event) {
+                    var target = event.target;
+                    $("#list li").removeClass("drag-over");
+                    if (target !== selected) {
+                        $(target).after(selected);
+                    }
                     $("#drag-item").hide();
+                    transitState(new NormalState());
+                },
+                toString: function() {
+                    return "DragMovingState";
                 }
             });
+
+            TextEditingState = function(target) {
+                selected = target;
+                var pos = $(selected).position();
+                this.input = 
+                    $("<input type='text' class='text-editing'>")
+                    .css({left: pos.left, top: pos.top})
+                    .val($(selected).text())
+                    .appendTo("body")
+                    .focus();
+                $(selected).html('&nbsp;');
+            };
+            $.extend(TextEditingState.prototype, AbstractState.prototype, {
+                onKeyDown: function(event) {
+                    if (event.which == 13) {
+                        var text = this.input.value;
+                        $(selected).text(this.input.val());
+                        this.input.remove();
+                        transitState(new NormalState());
+                    }
+                },
+                toString: function() {
+                    return "TextEditingState";
+                }
+            });
+
+            transitState(new NormalState());
         });
         </script> 
     </head>
