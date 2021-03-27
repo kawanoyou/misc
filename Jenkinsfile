@@ -6,9 +6,10 @@ pipeline {
         sh '''cd php
 php composer.phar install
 '''
-        sh '''./vendor/bin/phpunit --log-junit report.xml tests/
+        sh '''cd php
+./vendor/bin/phpunit --log-junit report.xml tests/
 '''
-        junit 'report.xml'
+        junit 'php/report.xml'
       }
     }
 
