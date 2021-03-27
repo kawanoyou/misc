@@ -1,10 +1,15 @@
 pipeline {
   agent any
   stages {
-    stage('a') {
+    stage('test') {
       steps {
-        sh 'ls'
-        sh 'pwd'
+        sh '''cd php
+php composer.phar install
+'''
+        sh '''cd php
+./vendor/bin/phpunit --log-junit report.xml tests/
+'''
+        junit 'php/report.xml'
       }
     }
 
