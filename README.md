@@ -1,4 +1,2 @@
 # misc
 
-foo
-bar
