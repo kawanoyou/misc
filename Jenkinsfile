@@ -11,7 +11,7 @@ pipeline {
           echo 'foo'
         }
 
-        sh 'exit 1'
+        sh 'exit'
       }
     }
 
