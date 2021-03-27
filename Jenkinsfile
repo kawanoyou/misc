@@ -1,10 +1,11 @@
 pipeline {
   agent any
   stages {
-    stage('a') {
+    stage('phpunit') {
       steps {
-        sh 'ls'
-        sh 'pwd'
+        sh '''cd php
+php composer.phar install
+./vendor/bin/phpunit tests/'''
       }
     }
 
