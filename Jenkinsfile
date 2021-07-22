@@ -13,7 +13,9 @@ pipeline {
             deleteDir() /* clean up our workspace */
         }
         success {
-            echo 'I succeeded!'
+            slackSend channel: '#ops-room',
+                      color: 'good',
+                      message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
         }
         unstable {
             echo 'I am unstable :/'
