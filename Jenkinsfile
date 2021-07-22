@@ -1,9 +1,13 @@
 pipeline {
     agent any
+    environment {
+        SLACK = credentials('slack')
+    }
     stages {
         stage('No-op') {
             steps {
-                sh 'ls'
+                sh "echo ${SLACK}"
+                sh "exit 1"
             }
         }
     }
@@ -21,7 +25,9 @@ pipeline {
             echo 'I am unstable :/'
         }
         failure {
-            echo 'I failed :('
+            slackSend channel: '#ops-room',
+                      color: 'danger',
+                      message: "The pipeline ${currentBuild.fullDisplayName} failed."
         }
         changed {
             echo 'Things were different before...'
