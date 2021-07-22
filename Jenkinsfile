@@ -1,12 +1,10 @@
 pipeline {
-  agent any
-  stages {
-    stage('a') {
-      steps {
-        sh 'ls'
-        sh 'pwd'
-      }
+    agent { docker { image 'php' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'php --version'
+            }
+        }
     }
-
-  }
 }
