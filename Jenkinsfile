@@ -1,19 +1,11 @@
 pipeline {
-  agent any
-  stages {
-    stage('a') {
-      steps {
-        sh 'ls'
-        sh 'pwd'
-        echo 'a message'
-        sleep 3
-        timestamps() {
-          echo 'foo'
+    agent any
+    stages {
+        stage('develop') {
+            steps {
+                sh 'git branch'
+                sh 'git status'
+            }
         }
-
-        sh 'exit'
-      }
     }
-
-  }
 }
