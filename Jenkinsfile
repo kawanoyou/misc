@@ -6,6 +6,7 @@ pipeline {
                 sh 'git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"'
                 sh 'git fetch'
                 sh 'git checkout master'
+                sh 'git pull'
                 sh 'date >> tmp'
                 sh 'git status'
                 sh 'git diff'
