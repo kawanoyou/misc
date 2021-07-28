@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh 'git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"'
                 sh 'git fetch'
-                sh 'git checkout master'
+                sh 'git checkout feature/3'
                 sh 'git pull'
                 sh 'date >> tmp'
                 sh 'git status'
